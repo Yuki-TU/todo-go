@@ -5,8 +5,8 @@ WORKDIR /go/src
 # gccの環境を入れる
 RUN apk update && apk add alpine-sdk
 
-# COPY ./go.mod ./go.sum  ./
-# RUN go mod tidy
-# COPY ./ ./
+COPY ./go.mod ./go.sum  ./
+RUN go mod tidy
+COPY ./ ./
 
-# CMD ["go","run","server.go"]
+CMD ["go","run","server.go"]
