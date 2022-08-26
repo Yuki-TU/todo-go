@@ -13,4 +13,12 @@ func SetRouting(router *gin.Engine) {
 			"message": "Hello World",
 		})
 	})
+
+	router.POST("/users", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"email":    "hoge@hoge.com",
+			"fullname": "GET",
+			"passwrod": "成功しました。",
+		})
+	})
 }
