@@ -9,7 +9,7 @@ $ cd ./todo-go
 $ docker-compose up -d --build
 $ docker-compose exec go sh
 # 以下コンテナ内
-$ go run server.go
+$ go run main.go
 ```
 
 API
