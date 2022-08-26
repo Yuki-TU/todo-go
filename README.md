@@ -12,4 +12,8 @@ $ docker-compose exec go sh
 $ go run server.go
 ```
 
-[http://localhost:8081/](http://localhost:8081/)にアクセス
+API
+[http://localhost:8081](http://localhost:8081)
+
+swagger-ui
+[http://localhost](http://localhost)
