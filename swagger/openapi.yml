@@ -1,0 +1,112 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: todoアプリのREST API
+  description: >-
+    TODOアプリのサンプルRESTAPI
+servers:
+  - url: 'http://{host}:8081'
+    description: go service api server endpoint application
+    variables:
+      host:
+        default: localhost
+        enum:
+          - localhost
+          - heroku.com
+paths:
+  ############################
+  ## REGISTER AUTH ENDPOINT
+  ############################
+  /users:
+    post:
+      tags:
+        - Auth Endpoint
+      summary: 認証して登録
+      description: register new users account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                fullname:
+                  type: string
+                  example: 藤本
+                email:
+                  type: string
+                  format: email
+                  example: fujimoto@gmail.com
+                password:
+                  type: string
+                  format: password
+                  example: qwerty123456789
+              required:
+                - fullname
+                - email
+                - password
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  email:
+                    type: string
+                    example: "hoge@hoge.com"
+                  fullname:
+                    type: string
+                    example: "ほげ太郎"
+                  password:
+                    type: string
+                    example: "hogehoge"
+                required:
+                  - email
+                  - fullname
+                  - password
+        '400':
+          description: |
+            JSONデータの解析に失敗
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/400Error'
+        '404':
+          description: |
+            無効なURL
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/404Error'
+  #################################
+  #################################
+  ## COMPONENTS AUTH TERITORY
+  #################################
+  #################################
+components:
+  schemas:
+    400Error:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int64
+          example: "400"
+        message: 
+          type: string
+          example: "無効なリクエストです。"
+    404Error:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int64
+          example: "404"
+        message: 
+          type: string
+          example: "無効なリクエストです。"
+externalDocs:
+  description: "Find more about Swagger"
+  url: "http://swagger.io"
