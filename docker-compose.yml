@@ -11,6 +11,68 @@ services:
     networks:
       - restapi_network
   ### ===================
+  ### DB SERVICE
+  ### ===================
+  db:
+    # image: postgres:12-alpine
+    image: mysql:8.0.30
+    container_name: db
+    restart: always
+    command: --default-authentication-plugin=mysql_native_password
+    healthcheck:
+      interval: 120ms
+      retries: 5
+      start_period: 60ms
+      test: |
+        touch /tmp/healthcheck.txt &&
+        mkdir /tmp/healthcheck &&
+        mv /tmp/healthcheck.txt /tmp/healthcheck &&
+        cd /tmp/healthcheck &&
+        echo "hello my docker container is working fine" >> healthcheck.txt &&
+        cat healthcheck.txt &&
+        rm healthcheck.txt &&
+        cd .. &&
+        rmdir /tmp/healthcheck
+        cls
+      timeout: 60ms
+    environment:
+      MYSQL_DATABASE: todo
+      MYSQL_USER: test
+      MYSQL_PASSWORD: test
+      MYSQL_ROOT_PASSWORD: test
+    ports:
+      - 3306:3306
+    # volumes:
+    #   - pg-data:/var/lib/postgresql/data
+    networks:
+      - restapi_network
+  ### ===================
+  ### ADMINER SERVICE
+  ### ===================
+  panel:
+    image: adminer:latest
+    restart: always
+    healthcheck:
+      interval: 120ms
+      retries: 5
+      start_period: 60ms
+      test: |
+        touch /tmp/healthcheck.txt &&
+        mkdir /tmp/healthcheck &&
+        mv /tmp/healthcheck.txt /tmp/healthcheck &&
+        cd /tmp/healthcheck &&
+        echo "hello my docker container is working fine" >> healthcheck.txt &&
+        cat healthcheck.txt &&
+        rm healthcheck.txt &&
+        cd .. &&
+        rmdir /tmp/healthcheck
+        cls
+      timeout: 60ms
+    ports:
+      - 8082:8080
+    networks:
+      - restapi_network
+  ### ===================
   ### SWAGGER SERVICE
   ### ===================
   doc:
