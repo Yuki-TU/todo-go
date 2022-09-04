@@ -5,7 +5,7 @@ info:
   description: >-
     TODOアプリのサンプルRESTAPI
 servers:
-  - url: 'http://{host}:8081'
+  - url: 'http://{host}:8081/api/v1'
     description: go service api server endpoint application
     variables:
       host:
@@ -46,26 +46,30 @@ paths:
                 - email
                 - password
       responses:
-        '200':
-          description: success
+        '201':
+          description: 登録成功
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  email:
+                  statusCode:
+                    type: integer
+                    format: number
+                    example: 201
+                  method:
                     type: string
-                    example: "hoge@hoge.com"
-                  fullname:
+                    example: "POST"
+                  message:
                     type: string
-                    example: "ほげ太郎"
-                  password:
-                    type: string
-                    example: "hogehoge"
+                    example: "Register new account successfully"
+                  data:
+                    type: object
+                    example: null
                 required:
-                  - email
-                  - fullname
-                  - password
+                  - statusCode
+                  - method
+                  - message
         '400':
           description: |
             JSONデータの解析に失敗
@@ -73,6 +77,32 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/400Error'
+        '403':
+          description: |
+            ユーザー登録失敗
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    format: number
+                    example: 403
+                  method:
+                    type: string
+                    example: "POST"
+                  message:
+                    type: string
+                    example: "Register new account failed"
+                  data:
+                    type: object
+                    example: null
+                required:
+                  - statusCode
+                  - method
+                  - message
+
         '404':
           description: |
             無効なURL
@@ -80,6 +110,31 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/404Error'
+        '409':
+          description: |
+            メールがドレスが登録済み
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    format: number
+                    example: 409
+                  method:
+                    type: string
+                    example: "POST"
+                  message:
+                    type: string
+                    example: "Email already exist"
+                  data:
+                    type: object
+                    example: null
+                required:
+                  - statusCode
+                  - method
+                  - message
   #################################
   #################################
   ## COMPONENTS AUTH TERITORY
@@ -90,20 +145,26 @@ components:
     400Error:
       type: object
       properties:
-        code:
+        statusCode:
           type: integer
           format: int64
           example: "400"
+        method:
+          type: string
+          example: "GET"
         message: 
           type: string
           example: "無効なリクエストです。"
     404Error:
       type: object
       properties:
-        code:
+        statusCode:
           type: integer
           format: int64
           example: "404"
+        method:
+          type: string
+          example: "GET"
         message: 
           type: string
           example: "無効なリクエストです。"
