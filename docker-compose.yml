@@ -1,6 +1,8 @@
 version: "3"
 services:
   app:
+    container_name: app
+    restart: always
     build: .
     volumes:
       - ./:/go/src
@@ -10,6 +12,8 @@ services:
     command: /bin/sh
     networks:
       - restapi_network
+    depends_on:
+      - db
   ### ===================
   ### DB SERVICE
   ### ===================
