@@ -30,6 +30,8 @@ func (s *service) RegisterService(input *InputRegister) (*model.EntityUsers, str
 		Password: input.Password,
 	}
 
+	users.HandleBeforeCreateUser()
+
 	resultRegister, errRegister := s.repository.RegisterRepository(&users)
 	return resultRegister, errRegister
 }
