@@ -2,6 +2,8 @@ package models
 
 import (
 	"time"
+
+	util "github.com/Yuki-TU/todo-go/utils"
 )
 
 // データベースで扱っているユーザテーブル
@@ -13,4 +15,11 @@ type EntityUsers struct {
 	Active    bool   `gorm:"type:bool;default:false"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
+}
+
+// アカウント作成前にする処理
+// * パスワードハッシュ化
+func (entity *EntityUsers) HandleBeforeCreateUser() error {
+	entity.Password = util.HashPassword(entity.Password)
+	return nil
 }
