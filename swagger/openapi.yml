@@ -18,9 +18,73 @@ paths:
   ## REGISTER AUTH ENDPOINT
   ############################
   /users:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - User
+      summary: ユーザ一覧取得
+      description: |
+        ユーザ一覧取得します。
+        全権取得する。
+      responses:
+        '200':
+          description: 取得成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    format: number
+                    example: 200
+                  method:
+                    type: string
+                    example: "GET"
+                  message:
+                    type: string
+                    example: "get user list successfully"
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        ID:
+                          type: integer
+                          example: 1
+                        Fullname:
+                          type: string
+                          example: "太郎"
+                        Email:
+                          type: string
+                          example: "taro@gmail.com"
+                        Active:
+                          type: boolean
+                          example: false
+                        CreatedAt:
+                          type: string
+                          example: "2022-09-11T16:13:47+09:00"
+                        UpdatedAt:
+                          type: string
+                          example: "2022-09-11T16:13:47+09:00"
+                required:
+                  - statusCode
+                  - method
+                  - message
+        '401':
+         $ref: '#/components/responses/401UnauthorizedError'
+        '404':
+          description: |
+            ユーザ一覧が取得できませんでした。
+            ユーザが存在しない。
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/404Error'
     post:
       tags:
-        - Auth Endpoint
+        - User
       summary: 認証して登録
       description: register new users account
       requestBody:
@@ -65,7 +129,10 @@ paths:
                     example: "Register new account successfully"
                   data:
                     type: object
-                    example: null
+                    properties:
+                      accessToken:
+                        type: string
+                        example:  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemF0aW9uIjp0cnVlLCJlbWFpbCI6ImZ1amltb3RvX2RhaWdvQGdtYWlsLmNvbSIsImV4cCI6MTY2MzI2NzExMCwiaWQiOjB9.ULejQB0o7qKu50I-tlrzCBeJIv4v1fpqP7GQOPwNPJ4"
                 required:
                   - statusCode
                   - method
@@ -140,7 +207,35 @@ paths:
   ## COMPONENTS AUTH TERITORY
   #################################
   #################################
+
 components:
+  securitySchemes:
+    bearerAuth:            # arbitrary name for the security scheme
+      type: http
+      scheme: bearer
+      bearerFormat: JWT 
+  responses:
+    401UnauthorizedError:
+      description: |
+        認証失敗
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              statusCode:
+                type: integer
+                format: int64
+                example: "400"
+              method:
+                type: string
+                example: "GET"
+              message: 
+                type: string
+                example: "認証に失敗しました。"    
+              data:
+                type: object
+                example: null
   schemas:
     400Error:
       type: object
@@ -168,6 +263,9 @@ components:
         message: 
           type: string
           example: "無効なリクエストです。"
+        data:
+          type: object
+          example: null
 externalDocs:
   description: "Find more about Swagger"
   url: "http://swagger.io"
