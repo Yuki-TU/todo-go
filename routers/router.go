@@ -3,10 +3,13 @@ package routers
 import (
 	"database/sql"
 
+	userList "github.com/Yuki-TU/todo-go/controllers/user/getList"
 	loginAuth "github.com/Yuki-TU/todo-go/controllers/user/login"
 	registerAuth "github.com/Yuki-TU/todo-go/controllers/user/register"
-	handlerRegister "github.com/Yuki-TU/todo-go/handlers/users"
+	handlerUserList "github.com/Yuki-TU/todo-go/handlers/users/list"
 	handlerLogin "github.com/Yuki-TU/todo-go/handlers/users/login"
+	handlerRegister "github.com/Yuki-TU/todo-go/handlers/users/register"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -22,12 +25,12 @@ func SetRouting(db *sql.DB, router *gin.Engine) {
 	loginService := loginAuth.NewServiceLogin(loginRepository)
 	loginHandler := handlerLogin.NewHandlerLogin(loginService)
 
+	userListRepository := userList.NewRepositoryUserList(db)
+	userListService := userList.NewServiceRegister(userListRepository)
+	userListHandler := handlerUserList.NewHandlerUserList(userListService)
+
 	groupRoute := router.Group("/api/v1")
-	groupRoute.GET("", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "Hello World",
-		})
-	})
 	groupRoute.POST("/users", registerHandler.RegisterHandler)
+	groupRoute.GET("/users", userListHandler.GetUserListHandler)
 	groupRoute.POST("/login", loginHandler.LoginHandler)
 }
