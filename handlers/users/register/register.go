@@ -6,6 +6,7 @@ import (
 	registerAuth "github.com/Yuki-TU/todo-go/controllers/user/register"
 	util "github.com/Yuki-TU/todo-go/utils"
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 )
 
 type handler struct {
@@ -25,7 +26,7 @@ func (h *handler) RegisterHandler(ctx *gin.Context) {
 	ctx.ShouldBindJSON(&input)
 
 	// ユーザ登録
-	_, errRegister := h.service.RegisterService(&input)
+	user, errRegister := h.service.RegisterService(&input)
 
 	switch errRegister {
 	case "REGISTER_CONFLICT_409":
@@ -35,6 +36,14 @@ func (h *handler) RegisterHandler(ctx *gin.Context) {
 		util.APIResponse(ctx, "Register new account failed", http.StatusForbidden, http.MethodPost, nil)
 		return
 	default:
-		util.APIResponse(ctx, "Register new account successfully", http.StatusCreated, http.MethodPost, nil)
+		accessTokenData := map[string]interface{}{"id": user.ID, "email": user.Email}
+		accessToken, errToken := util.Sign(accessTokenData, util.GodotEnv("JWT_SECRET"), 60)
+
+		if errToken != nil {
+			defer logrus.Error(errToken.Error())
+			util.APIResponse(ctx, "Generate accessToken failed", http.StatusBadRequest, http.MethodPost, nil)
+			return
+		}
+		util.APIResponse(ctx, "Register new account successfully", http.StatusCreated, http.MethodPost, map[string]string{"accessToken": accessToken})
 	}
 }
