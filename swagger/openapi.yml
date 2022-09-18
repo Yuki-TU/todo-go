@@ -207,6 +207,88 @@ paths:
   ## COMPONENTS AUTH TERITORY
   #################################
   #################################
+  /login:
+    post:
+      tags:
+        - login
+      summary: ログイン認証
+      description: |
+        ログイン認証して、アクセストークンを発行
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: fujimoto@gmail.com
+                password:
+                  type: string
+                  format: password
+                  example: qwerty123456789
+      responses:
+        '201':
+          description: 登録成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    format: number
+                    example: 201
+                  method:
+                    type: string
+                    example: "POST"
+                  message:
+                    type: string
+                    example: "Register new account successfully"
+                  data:
+                    type: object
+                    properties:
+                      accessToken:
+                        type: string
+                        example:  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemF0aW9uIjp0cnVlLCJlbWFpbCI6ImZ1amltb3RvX2RhaWdvQGdtYWlsLmNvbSIsImV4cCI6MTY2MzI2NzExMCwiaWQiOjB9.ULejQB0o7qKu50I-tlrzCBeJIv4v1fpqP7GQOPwNPJ4"
+                required:
+                  - statusCode
+                  - method
+                  - message
+        '403':
+          description: |
+            パスワードが間違っている
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    format: number
+                    example: 403
+                  method:
+                    type: string
+                    example: "POST"
+                  message:
+                    type: string
+                    example: "Username or password is wrong"
+                  data:
+                    type: object
+                    example: null
+                required:
+                  - statusCode
+                  - method
+                  - message
+        '404':
+          description: |
+            アカウントが存在しない
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/404Error'
 
 components:
   securitySchemes:
