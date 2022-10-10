@@ -42,11 +42,11 @@ swagger-ui
 
 ```sh
 # 環境変数定義（コンテナ起動時初回のみ）
-$ export DATABASE_URI='mysql://test:test@tcp(db:3306)/todo?charset=utf8&parseTime=true&loc=Asia%2FTokyo'
+$ export MYSQL_URI='mysql://test:test@tcp(db:3306)/todo?charset=utf8&parseTime=true&loc=Asia%2FTokyo'
 # テンプレート作成
 $ migrate create -ext sql -dir db/migrations -seq (table-name)
 # マイグレーション適用
-$ migrate -database ${DATABASE_URI} -path db/migrations up
+$ migrate -database ${MYSQL_URI} -path db/migrations up
 # リバースマイグレーション
-$ migrate -database ${DATABASE_URI} -path db/migrations down
+$ migrate -database ${MYSQL_URI} -path db/migrations down
 ```
