@@ -13,18 +13,26 @@ todo appのREST API
 $ git clone https://github.com/Yuki-TU/todo-go
 $ cd ./todo-go
 $ cp .env.example .env
-$ docker-compose up -d --build
-$ docker-compose exec app sh
+$ docker compose up -d --build
+$ docker compose exec app sh
 # 以下コンテナ内
 $ go run main.go
 ```
-
+ 
 API
 [http://localhost:8081](http://localhost:8081)
 
 swagger-ui
 [http://localhost](http://localhost)
 
+またMakefileも用意しているため、そちらでも実行可能
+
+```sh
+$ make up # docker compose up -d
+$ make build DOCKER_TAG=v1.0.0 # docker build --tag yuki-tu/todo-go:v1.0.0 --target deploy ./
+```
+
+詳しくは、`$ make help`または`Makefile`を参考
 
 # DB
 
@@ -41,7 +49,7 @@ swagger-ui
 # migration
 
 ```sh
-# 環境変数定義（コンテナ起動時初回のみ）
+# 環境変数定義（環境変数が指定されていないエラーが出たら）
 $ export MYSQL_URI='mysql://test:test@tcp(db:3306)/todo?charset=utf8&parseTime=true&loc=Asia%2FTokyo'
 # テンプレート作成
 $ migrate create -ext sql -dir db/migrations -seq (table-name)
